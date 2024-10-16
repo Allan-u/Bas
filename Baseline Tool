@@ -1,0 +1,162 @@
+import json
+from datetime import datetime
+
+class BaselineAssessmentTool:
+    def __init__(self):
+        self.responses = {}
+
+    def conduct_assessment(self):
+        """Conducts the assessment by iterating through each section."""
+        print("\nBaseline Evaluation Tool - Tobacco Control Assessment")
+        print("-------------------------------------------------------")
+
+        # Section A: Institutional Characteristics
+        self.responses["Section A: Institutional Characteristics"] = self.section_a()
+
+        # Section B: Impact Indicators
+        self.responses["Section B: Impact Indicators"] = self.section_b()
+
+        # Section C: Tobacco Control Expertise
+        self.responses["Section C: Improved Expertise"] = self.section_c()
+
+        # Section D: Access to Knowledge and Research
+        self.responses["Section D: Research and Knowledge"] = self.section_d()
+
+        # Section E: CTCA's Visibility and Capacity
+        self.responses["Section E: CTCA Visibility"] = self.section_e()
+
+    def section_a(self):
+        """Institutional Characteristics Section."""
+        print("\n--- Section A: Institutional Characteristics ---")
+        data = {
+            "Date": input("Enter the date [DD/MM/YYYY]: ").strip(),
+            "Data Collector Name": input("Name of the data collector: ").strip(),
+            "Respondent Gender": self.get_choice("Gender of the Respondent", ["Male", "Female"]),
+            "Country": input("Country: ").strip(),
+            "Affiliation": self.get_choice(
+                "Affiliation/Entity",
+                ["Legislature", "Ministry of Health", "Enforcement", "Judicial", "Other"]
+            ),
+            "Position": self.get_choice(
+                "What is your position in the institution?",
+                ["Minister", "Permanent Secretary", "General Manager", "Director", 
+                 "Commissioner", "Deputy Commissioner", "Officer", "Consultant/Technical Assistant", "Other"]
+            )
+        }
+        return data
+
+    def section_b(self):
+        """Impact Indicators Section."""
+        print("\n--- Section B: Impact Indicators ---")
+        data = {
+            "Is TC Program Integrated with Other Programs?": self.get_choice(
+                "Is the national tobacco control program integrated with other programs?",
+                ["No", "Yes", "Don't Know"]
+            ),
+            "Does the Country Have a National Coordination Mechanism?": self.get_choice(
+                "Does the country have a national coordination mechanism for tobacco control?",
+                ["No", "Yes", "Don't Know"]
+            ),
+            "How Was the National Coordination Mechanism Established?": self.get_choice(
+                "How is the national coordination mechanism established?",
+                ["By Law", "Administratively", "Other"]
+            ),
+            "Current Tobacco Use Prevalence": input("Enter the tobacco use prevalence in your country: ").strip()
+        }
+        return data
+
+    def section_c(self):
+        """Tobacco Control Expertise Section."""
+        print("\n--- Section C: Improved Tobacco Control Expertise ---")
+        data = {
+            "Number Devoted to Tobacco Control": input("How many people are devoted to tobacco control? ").strip(),
+            "People Trained in Tobacco Control": input("How many have received tobacco control training? ").strip(),
+            "Training Areas": input("If trained, indicate the areas of training: ").strip(),
+            "Was Training Supported by CTCA?": self.get_choice(
+                "Was the training supported by CTCA?",
+                ["No", "Yes", "Don't Know"]
+            ),
+            "Country's Training Program for TC": self.get_choice(
+                "Does your country have a tobacco control training program?",
+                ["No", "Yes", "Don't Know"]
+            ),
+            "Satisfaction with CTCA Programs": self.get_choice(
+                "How satisfied are you with CTCA-supported programs?",
+                ["Not Satisfactory", "Unsatisfactory", "Moderately Satisfactory", "Very Satisfactory", "Don't Know"]
+            )
+        }
+        return data
+
+    def section_d(self):
+        """Research and Knowledge Section."""
+        print("\n--- Section D: Access to Knowledge and Research ---")
+        data = {
+            "Has Research Been Conducted?": self.get_choice(
+                "Has your country conducted any research in tobacco control?",
+                ["Yes", "No"]
+            ),
+            "Research Areas": input("If yes, in what areas? ").strip(),
+            "Extent of Research Support": self.get_choice(
+                "To what extent has the research supported TC interventions?",
+                ["Small Extent", "Not Sure", "Large Extent"]
+            ),
+            "Availability of Research Funding": self.get_choice(
+                "How would you rate the availability of funding?",
+                ["Not Funded", "Poorly Funded", "Funded", "Well-Funded"]
+            ),
+            "Awareness of CTCA Knowledge Products": self.get_choice(
+                "Are you aware of CTCA-supported knowledge products?",
+                ["Yes", "No", "Don't Know"]
+            )
+        }
+        return data
+
+    def section_e(self):
+        """CTCA Visibility and Capacity Section."""
+        print("\n--- Section E: Improved CTCA's Visibility ---")
+        data = {
+            "Awareness of CTCA Programs": self.get_choice(
+                "Are you aware of any CTCA capacity-building programs?",
+                ["Yes", "No", "Don't Know"]
+            ),
+            "Likelihood to Recommend CTCA": self.get_choice(
+                "How likely are you to recommend CTCA programs?",
+                ["Yes with Proof", "Yes without Proof", "No, Not Applied", "I Don't Know"]
+            ),
+            "CTCA Content Platforms": self.get_choice(
+                "Have you seen CTCA content on any of these platforms?",
+                ["Internet", "Social Media", "Website", "Publications"]
+            )
+        }
+        return data
+
+    def get_choice(self, question, options):
+        """Helper function to get a valid choice from the user."""
+        print(f"\n{question}")
+        for i, option in enumerate(options, 1):
+            print(f"{i}. {option}")
+        while True:
+            try:
+                choice = int(input("Enter the number of your choice: "))
+                if 1 <= choice <= len(options):
+                    return options[choice - 1]
+                else:
+                    print(f"Please select a number between 1 and {len(options)}.")
+            except ValueError:
+                print("Invalid input. Please enter a valid number.")
+
+    def save_results(self, filename="baseline_results.json"):
+        """Saves the responses to a JSON file."""
+        results = {
+            "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "responses": self.responses
+        }
+        with open(filename, 'w') as f:
+            json.dump(results, f, indent=2)
+        print(f"\nResults saved to {filename}")
+
+# Usage example
+if __name__ == "__main__":
+    tool = BaselineAssessmentTool()
+    tool.conduct_assessment()
+    tool.save_results()
